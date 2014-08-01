@@ -26,38 +26,4 @@
   done
 # }
 
-# { Combine Sources
-  counter=1
-  cat $source_list | while read line
-  do
-    counter=$((counter+1))
-    dest=`head $source_list -n $((counter+1)) | tail -n 1`
-    if [[ "$line" != "$dest" ]]
-    then
-      #echo "source: "$line
-      #echo "  dest: "$dest
-      echo "merging $line into $dest"
-      bash ./mbutil/patch "./"$line".mbtiles" "./"$dest".mbtiles"
-    fi
-  done
-# }
-
-# { copy the final file to the new mapbox id
-  last=`tail $source_list -n 1`
-  cp $last.mbtiles $mapbox_id.mbiltes
-  echo "UPDATE metadata SET value = '$mapbox_id' WHERE name = 'name';" | sqlite3 $mapbox_id.mbiltes
-# }
-
-# { Delete the downloaded files
-  cat $source_list | while read line
-  do
-    rm $line.mbtiles
-    rm -f $line.mbtiles-journal
-  done
-# }
-
-# { Upload to Mapbox
-  # TODO
-# }
-
-echo "Complete!"
+./process_sources.sh $mapbox_id
