@@ -44,13 +44,15 @@
 
 # { copy the final file to the new mapbox id
   last=`tail $source_list -n 1`
-  cp $last $mapbox_id.mbiltes
+  cp $last.mbtiles $mapbox_id.mbiltes
+  echo "UPDATE metadata SET value = '$mapbox_id' WHERE name = 'name';" | sqlite3 $mapbox_id.mbiltes
 # }
 
 # { Delete the downloaded files
   cat $source_list | while read line
   do
     rm $line.mbtiles
+    rm -f $line.mbtiles-journal
   done
 # }
 
